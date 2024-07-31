@@ -1,45 +1,46 @@
 package dev.lucas.todoapp.todo;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import dev.lucas.todoapp.todo.exceptions.TodoNotFoundException;
-import jakarta.annotation.PostConstruct;
 
 @Repository
 public class TodoRepository {
 
-    private List<Todo> todos = new ArrayList<>();
+    private final static Logger LOG = LoggerFactory.getLogger(TodoRepository.class);
+    private final JdbcClient jdbcClient;
+
+    public TodoRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
 
     public List<Todo> findAll() {
-        return todos;
+        LOG.info("Fetching all todos.");
+        return this.jdbcClient.sql("SELECT * FROM Todos").query(Todo.class).list();
     }
 
     public Optional<Todo> findById(Integer id) {
-        return todos.stream().filter(t -> t.id().equals(id)).findFirst();
+        LOG.info("Fetching todo with id {}.", id);
+        return this.jdbcClient.sql("SELECT * FROM Todos WHERE id = :id").param(id).query(Todo.class).optional();
     }
 
     public Todo update(TodoUpdate todoUpdate, Integer id) {
-        Optional<Todo> todoOptional = todos.stream().filter(t -> t.id().equals(id)).findFirst();
-        System.out.println(todoOptional);
+        Optional<Todo> todoOptional = this.jdbcClient.sql("SELECT * FROM Todos WHERE id = :id").param(id)
+                .query(Todo.class).optional();
+
         if (todoOptional.isPresent()) {
+            LOG.info("Updating todo with id {}.", id);
 
-            Todo existingTodo = todoOptional.get();
+            this.jdbcClient.sql(
+                    "UPDATE Todos SET title = :title, description = :description, completed = :completed, due_date = :due_date, updated_at = :updated_at WHERE id = :id");
 
-            String newTitle = todoUpdate.title().orElse(existingTodo.title());
-            String newDescription = todoUpdate.description().orElse(existingTodo.description());
-            Boolean newCompleted = todoUpdate.completed().orElse(existingTodo.completed());
-            LocalDateTime newDueDate = todoUpdate.dueDate().orElse(existingTodo.dueDate());
-
-            Todo updatedTodo = new Todo(id, newTitle, newDescription, newCompleted, newDueDate,
-                    existingTodo.createdAt(), LocalDateTime.now());
-
-            todos.set(todos.indexOf(existingTodo), updatedTodo);
+            Todo updatedTodo = todoOptional.get();
 
             return updatedTodo;
         }
@@ -48,15 +49,8 @@ public class TodoRepository {
     }
 
     public void deleteById(Integer id) {
-        todos.removeIf(t -> t.id().equals(id));
+        LOG.info("Deleting todo with id {}.", id);
+        this.jdbcClient.sql("DELETE FROM Todos WHERE id = :id").param(id);
     }
 
-    @PostConstruct
-    public void init() {
-        todos.add(new Todo(1, "Workout", "Morning Routine", false, LocalDateTime.now().plus(1, ChronoUnit.HOURS),
-                LocalDateTime.now(), LocalDateTime.now()));
-        todos.add(new Todo(2, "Meditate", "Alone Time", false, LocalDateTime.now().plus(2, ChronoUnit.HOURS),
-                LocalDateTime.now(), LocalDateTime.now()));
-
-    }
 }
