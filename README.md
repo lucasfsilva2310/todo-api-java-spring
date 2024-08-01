@@ -1,7 +1,12 @@
 # Todo Application Using Java and Spring
 
-## First dependencies when downloading app Through Spring Initializer
+## Dependencies
 
-- Spring Web: To create REST API later on
-- Spring Boot DevTools: For an enhanced development experience
-- H2 Database: To have a in-memory database using JDBC to start.
+Listed on pom.xml
+
+- Postgres runtime driver
+- Docker compose runtime driver
+- Jdbc Client
+- Spring boot Starter Web
+- Spring boot Dev tools
+- Spring boot Starter test

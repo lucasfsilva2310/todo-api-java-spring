@@ -1,0 +1,36 @@
+{
+  "runs": [
+    {
+      "id": 1,
+      "title": "Wake up",
+      "description": "Just wake up",
+      "completed": false,
+      "created_at": "2020-01-01T10:00:00",
+      "updated_at": "2020-01-01T10:00:00"
+    },
+    {
+      "id": 2,
+      "title": "Drink Coffee",
+      "description": "Just Drink Coffee",
+      "completed": false,
+      "created_at": "2020-01-01T10:00:00",
+      "updated_at": "2020-01-01T10:00:00"
+    },
+    {
+      "id": 3,
+      "title": "Run",
+      "description": "Just Run",
+      "completed": false,
+      "created_at": "2020-01-01T10:00:00",
+      "updated_at": "2020-01-01T10:00:00"
+    },
+    {
+      "id": 4,
+      "title": "Drink Water",
+      "description": "Just Drink Water",
+      "completed": false,
+      "created_at": "2020-01-01T10:00:00",
+      "updated_at": "2020-01-01T10:00:00"
+    }
+  ]
+}

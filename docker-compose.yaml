@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: "postgres:latest"
+    environment:
+      - "POSTGRES_DB=todoapp"
+      - "POSTGRES_PASSWORD=todoapppassword"
+      - "POSTGRES_USER=todoappusername"
+    ports:
+      - "5432:5432"
